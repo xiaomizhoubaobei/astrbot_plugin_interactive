@@ -1,0 +1,230 @@
+{
+  "points": {
+    "description": "积分系统配置",
+    "type": "object",
+    "items": {
+      "initial_points": {
+        "description": "新用户初始积分",
+        "type": "int",
+        "default": 100,
+        "hint": "用户首次使用时获得的初始积分"
+      },
+      "daily_command_limit": {
+        "description": "每日命令使用次数限制",
+        "type": "int",
+        "default": 50,
+        "hint": "每个用户每天最多使用命令的次数"
+      },
+      "command_cooldown": {
+        "description": "命令冷却时间（秒）",
+        "type": "int",
+        "default": 5,
+        "hint": "两次命令之间的最小间隔时间"
+      }
+    }
+  },
+  "sign": {
+    "description": "每日签到配置",
+    "type": "object",
+    "items": {
+      "base_reward": {
+        "description": "基础签到奖励",
+        "type": "int",
+        "default": 10,
+        "hint": "每次签到获得的基础积分"
+      },
+      "consecutive_bonus": {
+        "description": "连续签到每日加成",
+        "type": "int",
+        "default": 2,
+        "hint": "每连续签到一天额外增加的积分"
+      },
+      "max_consecutive_bonus": {
+        "description": "连续签到最大加成",
+        "type": "int",
+        "default": 100,
+        "hint": "连续签到奖励的上限"
+      },
+      "week_bonus": {
+        "description": "每周奖励",
+        "type": "int",
+        "default": 50,
+        "hint": "连续签到满7天额外奖励的积分"
+      }
+    }
+  },
+  "lottery": {
+    "description": "抽奖系统配置",
+    "type": "object",
+    "items": {
+      "cost": {
+        "description": "单次抽奖消耗积分",
+        "type": "int",
+        "default": 10,
+        "hint": "每次抽奖需要消耗的积分"
+      },
+      "ssr_rate": {
+        "description": "SSR 中奖概率（百分比）",
+        "type": "float",
+        "default": 5.0,
+        "hint": "SSR 稀有奖品的中奖概率（0-100）"
+      },
+      "sr_rate": {
+        "description": "SR 中奖概率（百分比）",
+        "type": "float",
+        "default": 10.0,
+        "hint": "SR 高级奖品的中奖概率（0-100）"
+      },
+      "r_rate": {
+        "description": "R 中奖概率（百分比）",
+        "type": "float",
+        "default": 25.0,
+        "hint": "R 普通奖品的中奖概率（0-100）"
+      },
+      "ssr_reward": {
+        "description": "SSR 奖励积分",
+        "type": "int",
+        "default": 100,
+        "hint": "抽中 SSR 额外获得的积分"
+      },
+      "sr_reward": {
+        "description": "SR 奖励积分",
+        "type": "int",
+        "default": 30,
+        "hint": "抽中 SR 额外获得的积分"
+      },
+      "r_reward": {
+        "description": "R 奖励积分",
+        "type": "int",
+        "default": 10,
+        "hint": "抽中 R 额外获得的积分"
+      },
+      "lucky_charm_boost": {
+        "description": "幸运护符概率提升（百分比）",
+        "type": "float",
+        "default": 20.0,
+        "hint": "使用幸运护符时高级奖品概率提升的百分比"
+      }
+    }
+  },
+  "guess_game": {
+    "description": "猜数字游戏配置",
+    "type": "object",
+    "items": {
+      "max_number": {
+        "description": "猜数字范围",
+        "type": "int",
+        "default": 100,
+        "hint": "游戏目标数字的最大值（1~N）"
+      },
+      "base_points": {
+        "description": "基础积分奖励",
+        "type": "int",
+        "default": 5,
+        "hint": "每次正确猜测的基础奖励积分"
+      },
+      "time_bonus_rate": {
+        "description": "时间奖励系数",
+        "type": "float",
+        "default": 2.0,
+        "hint": "每少用1秒获得的额外积分"
+      },
+      "attempt_penalty": {
+        "description": "尝试次数惩罚",
+        "type": "int",
+        "default": 1,
+        "hint": "每尝试一次减少的积分"
+      }
+    }
+  },
+  "cow_system": {
+    "description": "牛牛系统配置",
+    "type": "object",
+    "items": {
+      "feed_cost": {
+        "description": "喂食消耗积分",
+        "type": "int",
+        "default": 10,
+        "hint": "每次喂食需要消耗的积分"
+      },
+      "play_cost": {
+        "description": "玩耍消耗积分",
+        "type": "int",
+        "default": 5,
+        "hint": "每次玩耍需要消耗的积分"
+      },
+      "feed_restore": {
+        "description": "喂食恢复饱食度",
+        "type": "int",
+        "default": 30,
+        "hint": "喂食恢复的饱食度数值"
+      },
+      "play_restore": {
+        "description": "玩耍恢复心情",
+        "type": "int",
+        "default": 30,
+        "hint": "玩耍恢复的心情数值"
+      },
+      "level_up_exp_mult": {
+        "description": "升级经验倍率",
+        "type": "float",
+        "default": 1.0,
+        "hint": "升级所需经验值的倍率（调整升级难度）"
+      },
+      "level_up_favor_mult": {
+        "description": "升级好感度倍率",
+        "type": "float",
+        "default": 1.0,
+        "hint": "升级所需好感度的倍率（调整升级难度）"
+      }
+    }
+  },
+  "shop": {
+    "description": "商店配置",
+    "type": "object",
+    "items": {
+      "enable_custom_prices": {
+        "description": "启用自定义价格",
+        "type": "bool",
+        "default": false,
+        "hint": "启用后可在下方配置各商品价格"
+      },
+      "double_card_price": {
+        "description": "双倍积分卡价格",
+        "type": "int",
+        "default": 50,
+        "hint": "双倍积分卡在商店的价格"
+      },
+      "lottery_ticket_price": {
+        "description": "免费抽奖券价格",
+        "type": "int",
+        "default": 40,
+        "hint": "免费抽奖券在商店的价格"
+      },
+      "hint_token_price": {
+        "description": "提示令牌价格",
+        "type": "int",
+        "default": 30,
+        "hint": "提示令牌在商店的价格"
+      },
+      "lucky_charm_price": {
+        "description": "幸运护符价格",
+        "type": "int",
+        "default": 100,
+        "hint": "幸运护符在商店的价格"
+      },
+      "coffee_price": {
+        "description": "提神咖啡价格",
+        "type": "int",
+        "default": 80,
+        "hint": "提神咖啡在商店的价格"
+      },
+      "exp_card_price": {
+        "description": "经验卡价格",
+        "type": "int",
+        "default": 120,
+        "hint": "经验卡在商店的价格"
+      }
+    }
+  }
+}
