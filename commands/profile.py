@@ -1,11 +1,19 @@
 from astrbot.api.event import AstrMessageEvent, MessageEventResult
+
+from ..utils.logger_manager import PluginLogger, UserActionLogger
+
+
+
 from ..config import ACHIEVEMENTS
 
 
 class ProfileCommand:
     """查看个人资料命令"""
 
-    def __init__(self, user_manager):
+    def __init__(self, user_manager, logger: PluginLogger):
+        self.logger = logger
+        self.plugin_name = "astrbot_plugin_interactive"
+        self.action_logger = UserActionLogger(logger)
         self.user_manager = user_manager
 
     async def handle(self, event: AstrMessageEvent) -> None:
@@ -33,6 +41,7 @@ class ProfileCommand:
             f"🎮 游戏: {user['games_won']} 胜 / {user['games_played']} 场\n"
             f"🎯 成就: {len(user['achievements'])}/{len(ACHIEVEMENTS)} 个\n"
             f"🎰 抽中SSR: {user['ssr_count']} 次\n"
+            f"🎯 幸运转盘: {user.get('total_spins', 0)} 次 (免费: {user.get('free_spin_count', 0)})\n"
             f"🛒 商店消费: {user['total_spent']} 积分\n"
             f"🧾 今日使用: {user['daily_command_count']}/50 次\n"
             f"🎁 道具:\n"

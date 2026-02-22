@@ -1,6 +1,7 @@
-from astrbot.api import star, logger
+from astrbot.api import star
 from astrbot.api.event import AstrMessageEvent, filter
 
+from .utils.logger_manager import PluginLogger, UserActionLogger
 from .data import UserManager, GameManager
 from .commands.achievements import AchievementManager, AchievementsCommand
 from .commands.guess import GuessCommand
@@ -12,6 +13,7 @@ from .commands.inventory import InventoryCommand
 from .commands.profile import ProfileCommand
 from .commands.help import HelpCommand
 from .commands.cow import CowCommand
+from .commands.spin import SpinCommand
 
 
 class Main(star.Star):
@@ -28,24 +30,32 @@ class Main(star.Star):
         self.config = config if config else {}
         self._init_config()
 
+        # 初始化日志系统
+        self.logger = PluginLogger(
+            self.name,
+            enable_debug=self.config.get("debug_mode", False)
+        )
+        self.action_logger = UserActionLogger(self.logger)
+
         # 初始化管理器
         self.user_manager = UserManager(self)
-        self.game_manager = GameManager()
-        self.achievement_manager = AchievementManager(self.user_manager)
+        self.game_manager = GameManager(self.logger)
+        self.achievement_manager = AchievementManager(self.user_manager, self.logger)
 
         # 初始化命令处理器
-        self.guess_command = GuessCommand(self, self.user_manager, self.game_manager, self.achievement_manager)
-        self.sign_command = SignCommand(self, self.user_manager, self.achievement_manager)
-        self.lottery_command = LotteryCommand(self, self.user_manager, self.achievement_manager)
-        self.shop_command = ShopCommand(self, self.user_manager, self.achievement_manager)
-        self.use_command = UseCommand(self, self.user_manager)
-        self.inventory_command = InventoryCommand(self.user_manager)
-        self.achievements_command = AchievementsCommand(self.user_manager)
-        self.profile_command = ProfileCommand(self.user_manager)
+        self.guess_command = GuessCommand(self, self.user_manager, self.game_manager, self.achievement_manager, self.logger)
+        self.sign_command = SignCommand(self, self.user_manager, self.achievement_manager, self.logger)
+        self.lottery_command = LotteryCommand(self, self.user_manager, self.achievement_manager, self.logger)
+        self.shop_command = ShopCommand(self, self.user_manager, self.achievement_manager, self.logger)
+        self.use_command = UseCommand(self, self.user_manager, self.logger)
+        self.inventory_command = InventoryCommand(self.user_manager, self.logger)
+        self.achievements_command = AchievementsCommand(self.user_manager, self.logger)
+        self.profile_command = ProfileCommand(self.user_manager, self.logger)
         self.help_command = HelpCommand()
-        self.cow_command = CowCommand(self, self.user_manager)
+        self.cow_command = CowCommand(self, self.user_manager, self.logger)
+        self.spin_command = SpinCommand(self, self.user_manager, self.achievement_manager, self.logger)
 
-        logger.info(f"[{self.name}] 插件组件初始化完成")
+        self.logger.info("插件组件初始化完成")
 
     def _init_config(self) -> None:
         """初始化配置，确保所有配置项都有默认值"""
@@ -119,78 +129,85 @@ class Main(star.Star):
 
     async def initialize(self) -> None:
         """插件初始化"""
-        logger.info(f"[{self.name}] 互动游戏插件已加载")
+        self.logger.info("互动游戏插件已加载")
 
     async def terminate(self) -> None:
         """插件卸载"""
-        logger.info(f"[{self.name}] 互动游戏插件已卸载，当前活跃游戏数: {len(self.game_manager.games)}")
+        self.logger.info("互动游戏插件已卸载，当前活跃游戏数: {len(self.game_manager.games)}")
 
     # ========== 命令注册 ==========
     @filter.command("guess")
     async def guess(self, event: AstrMessageEvent, message: str = "") -> None:
         """猜数字游戏"""
         user_id = event.get_sender_id()
-        logger.debug(f"[{self.name}] 用户 {user_id} 执行 guess 命令: {message}")
+        self.logger.debug("用户 {user_id} 执行 guess 命令: {message}")
         await self.guess_command.handle(event, message)
 
     @filter.command("sign")
     async def sign(self, event: AstrMessageEvent) -> None:
         """每日签到"""
         user_id = event.get_sender_id()
-        logger.debug(f"[{self.name}] 用户 {user_id} 执行 sign 命令")
+        self.logger.debug("用户 {user_id} 执行 sign 命令")
         await self.sign_command.handle(event)
 
     @filter.command("lottery")
     async def lottery(self, event: AstrMessageEvent) -> None:
         """消耗10积分抽奖"""
         user_id = event.get_sender_id()
-        logger.debug(f"[{self.name}] 用户 {user_id} 执行 lottery 命令")
+        self.logger.debug("用户 {user_id} 执行 lottery 命令")
         await self.lottery_command.handle(event)
 
     @filter.command("shop")
     async def shop(self, event: AstrMessageEvent, action: str = "", item_id: str = "") -> None:
         """积分商店"""
         user_id = event.get_sender_id()
-        logger.debug(f"[{self.name}] 用户 {user_id} 执行 shop 命令: action={action}, item_id={item_id}")
+        self.logger.debug("用户 {user_id} 执行 shop 命令: action={action}, item_id={item_id}")
         await self.shop_command.handle(event, action, item_id)
 
     @filter.command("use")
     async def use_item(self, event: AstrMessageEvent, item_id: str = "") -> None:
         """使用物品"""
         user_id = event.get_sender_id()
-        logger.debug(f"[{self.name}] 用户 {user_id} 执行 use 命令: item_id={item_id}")
+        self.logger.debug("用户 {user_id} 执行 use 命令: item_id={item_id}")
         await self.use_command.handle(event, item_id)
 
     @filter.command("inventory")
     async def inventory(self, event: AstrMessageEvent) -> None:
         """查看物品栏"""
         user_id = event.get_sender_id()
-        logger.debug(f"[{self.name}] 用户 {user_id} 执行 inventory 命令")
+        self.logger.debug("用户 {user_id} 执行 inventory 命令")
         await self.inventory_command.handle(event)
 
     @filter.command("achievements")
     async def achievements(self, event: AstrMessageEvent) -> None:
         """查看成就"""
         user_id = event.get_sender_id()
-        logger.debug(f"[{self.name}] 用户 {user_id} 执行 achievements 命令")
+        self.logger.debug("用户 {user_id} 执行 achievements 命令")
         await self.achievements_command.handle(event)
 
     @filter.command("profile")
     async def profile(self, event: AstrMessageEvent) -> None:
         """查看个人资料"""
         user_id = event.get_sender_id()
-        logger.debug(f"[{self.name}] 用户 {user_id} 执行 profile 命令")
+        self.logger.debug("用户 {user_id} 执行 profile 命令")
         await self.profile_command.handle(event)
 
     @filter.command("interactive")
     async def interactive_help(self, event: AstrMessageEvent) -> None:
         """互动功能帮助"""
-        logger.debug(f"[{self.name}] 执行 interactive_help 命令")
+        self.logger.debug("执行 interactive_help 命令")
         await self.help_command.handle(event)
 
     @filter.command("cow")
     async def cow(self, event: AstrMessageEvent, action: str = "", nickname: str = "") -> None:
         """牛牛系统"""
         user_id = event.get_sender_id()
-        logger.debug(f"[{self.name}] 用户 {user_id} 执行 cow 命令: action={action}, nickname={nickname}")
+        self.logger.debug("用户 {user_id} 执行 cow 命令: action={action}, nickname={nickname}")
         await self.cow_command.handle(event, action, nickname)
+
+    @filter.command("spin")
+    async def spin(self, event: AstrMessageEvent, message: str = "") -> None:
+        """幸运转盘"""
+        user_id = event.get_sender_id()
+        self.logger.debug("用户 {user_id} 执行 spin 命令: {message}")
+        await self.spin_command.handle(event, message.strip())

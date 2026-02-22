@@ -1,10 +1,18 @@
 from astrbot.api.event import AstrMessageEvent, MessageEventResult
 
+from ..utils.logger_manager import PluginLogger, UserActionLogger
+
+
+
+
 
 class UseCommand:
     """使用物品命令"""
 
-    def __init__(self, star_instance, user_manager):
+    def __init__(self, star_instance, user_manager, logger: PluginLogger):
+        self.logger = logger
+        self.plugin_name = "astrbot_plugin_interactive"
+        self.action_logger = UserActionLogger(logger)
         self.star = star_instance
         self.user_manager = user_manager
 

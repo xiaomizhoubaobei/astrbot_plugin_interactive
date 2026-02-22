@@ -2,17 +2,24 @@ import random
 from datetime import datetime
 from typing import Any
 from astrbot.api.event import AstrMessageEvent, MessageEventResult
-from astrbot.api import logger
+
+from ..utils.logger_manager import PluginLogger, UserActionLogger
+
+
+
+
 from ..config import COW_LEVELS, DEFAULT_COW, COW_INTERACTIONS, COW_NICKNAMES
 
 
 class CowCommand:
     """牛牛系统命令"""
 
-    def __init__(self, star_instance, user_manager):
+    def __init__(self, star_instance, user_manager, logger: PluginLogger):
+        self.logger = logger
+        self.plugin_name = "astrbot_plugin_interactive"
+        self.action_logger = UserActionLogger(logger)
         self.star = star_instance
         self.user_manager = user_manager
-        self.plugin_name = "astrbot_plugin_interactive"
 
     async def handle(self, event: AstrMessageEvent, action: str = "", nickname: str = "") -> None:
         """处理牛牛命令"""
@@ -107,7 +114,7 @@ class CowCommand:
         user["cow"] = cow
         await self.user_manager.update_user_data(user_id, platform, user)
 
-        logger.info(f"[{self.plugin_name}] 用户 {user_id}@{platform} 领养了牛牛: {nickname}")
+        self.logger.info(f"[{self.logger}] 用户 {user_id}@{platform} 领养了牛牛: {nickname}")
 
         event.set_result(MessageEventResult().message(
             f"🎉 恭喜！你成功领养了牛牛「{nickname}」！\n"
@@ -285,7 +292,7 @@ class CowCommand:
 
         if cow["exp"] >= next_level["exp_needed"] and cow["favor"] >= next_level["favor_needed"]:
             cow["level"] += 1
-            logger.debug(f"[{self.plugin_name}] 牛牛升级到 Lv.{cow['level']}")
+            self.logger.debug(f"[{self.logger}] 牛牛升级到 Lv.{cow['level']}")
             return True
         return False
 

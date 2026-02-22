@@ -1,6 +1,6 @@
 name: astrbot_plugin_interactive
 display_name: Interactive
 desc: 一个功能丰富的互动游戏插件，包含猜数字、签到、抽奖、商店、成就系统等功能。
-version: v0.0.2
+version: v0.0.3
 author: 祁筱欣
 repo: https://github.com/xiaomizhoubaobei/astrbot_plugin_interactive

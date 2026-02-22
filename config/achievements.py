@@ -35,5 +35,29 @@ ACHIEVEMENTS = [
         "name": "购物狂",
         "description": "在商店消费1000积分",
         "reward": 250
+    },
+    {
+        "id": "spin_beginner",
+        "name": "转盘新手",
+        "description": "首次转动幸运转盘",
+        "reward": 30
+    },
+    {
+        "id": "spin_regular",
+        "name": "转盘常客",
+        "description": "累计转动转盘10次",
+        "reward": 80
+    },
+    {
+        "id": "spin_master",
+        "name": "转盘老手",
+        "description": "连续7天参与转盘",
+        "reward": 200
+    },
+    {
+        "id": "lucky_star",
+        "name": "幸运之星",
+        "description": "在转盘中获得特等奖",
+        "reward": 500
     }
 ]

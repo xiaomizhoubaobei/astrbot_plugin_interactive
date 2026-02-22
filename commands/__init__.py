@@ -8,6 +8,7 @@ from .inventory import InventoryCommand
 from .achievements import AchievementsCommand
 from .profile import ProfileCommand
 from .help import HelpCommand
+from .cow import CowCommand
 
 __all__ = [
     "GuessCommand",
@@ -18,5 +19,6 @@ __all__ = [
     "InventoryCommand",
     "AchievementsCommand",
     "ProfileCommand",
-    "HelpCommand"
+    "HelpCommand",
+    "CowCommand"
 ]

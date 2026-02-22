@@ -1,16 +1,23 @@
 from astrbot.api.event import AstrMessageEvent, MessageEventResult
-from astrbot.api import logger
+
+from ..utils.logger_manager import PluginLogger, UserActionLogger
+
+
+
+
 from ..config import DEFAULT_SHOP_ITEMS
 
 
 class ShopCommand:
     """商店命令"""
 
-    def __init__(self, star_instance, user_manager, achievement_manager):
+    def __init__(self, star_instance, user_manager, achievement_manager, logger: PluginLogger):
+        self.logger = logger
+        self.plugin_name = "astrbot_plugin_interactive"
+        self.action_logger = UserActionLogger(logger)
         self.star = star_instance
         self.user_manager = user_manager
         self.achievement_manager = achievement_manager
-        self.plugin_name = "astrbot_plugin_interactive"
 
     async def handle(self, event: AstrMessageEvent, action: str = "", item_id: str = "") -> None:
         """处理商店命令"""
@@ -34,7 +41,7 @@ class ShopCommand:
 
     async def _show_shop_list(self, event: AstrMessageEvent) -> None:
         """显示商店列表"""
-        logger.debug(f"[{self.plugin_name}] 显示商店列表")
+        self.logger.debug(f"[{self.logger}] 显示商店列表")
         shop_list = "🛍️ 商店商品列表 🛍️\n"
         for item in DEFAULT_SHOP_ITEMS:
             shop_list += f"[{item['id']}] {item['name']} - {item['description']}\n"
@@ -51,13 +58,13 @@ class ShopCommand:
 
         item = next((i for i in DEFAULT_SHOP_ITEMS if i["id"] == item_id), None)
         if not item:
-            logger.debug(f"[{self.plugin_name}] 用户 {user_id}@{platform} 尝试购买不存在的商品: {item_id}")
+            self.logger.debug(f"[{self.logger}] 用户 {user_id}@{platform} 尝试购买不存在的商品: {item_id}")
             event.set_result(MessageEventResult().message("❌ 找不到该商品，请检查商品ID"))
             return
 
         user = await self.user_manager.get_user_data(user_id, platform)
         if user["points"] < item["price"]:
-            logger.debug(f"[{self.plugin_name}] 用户 {user_id}@{platform} 积分不足购买 {item['name']}")
+            self.logger.debug(f"[{self.logger}] 用户 {user_id}@{platform} 积分不足购买 {item['name']}")
             event.set_result(
                 MessageEventResult().message(
                     f"❌ 积分不足！需要 {item['price']} 积分，你当前只有 {user['points']} 积分"
@@ -68,7 +75,7 @@ class ShopCommand:
         user["points"] -= item["price"]
         user["total_spent"] += item["price"]
 
-        logger.info(f"[{self.plugin_name}] 用户 {user_id}@{platform} 购买商品: {item['name']} ({item['price']} 积分)")
+        self.logger.info(f"[{self.logger}] 用户 {user_id}@{platform} 购买商品: {item['name']} ({item['price']} 积分)")
 
         if item["storable"]:
             await self.user_manager.add_item_to_inventory(user_id, platform, item)
@@ -90,18 +97,18 @@ class ShopCommand:
         """应用立即生效物品效果"""
         if item_id == "double_card":
             user["has_double_card"] = True
-            logger.debug(f"[{self.plugin_name}] 应用效果: 双倍积分卡")
+            self.logger.debug(f"[{self.logger}] 应用效果: 双倍积分卡")
             return "✅ 购买成功！下次签到将获得双倍积分！"
         elif item_id == "lottery_ticket":
             user["free_lottery_count"] += 1
-            logger.debug(f"[{self.plugin_name}] 应用效果: 免费抽奖券")
+            self.logger.debug(f"[{self.logger}] 应用效果: 免费抽奖券")
             return "✅ 购买成功！获得一张免费抽奖券！"
         elif item_id == "hint_token":
             user["hint_tokens"] += 1
-            logger.debug(f"[{self.plugin_name}] 应用效果: 提示令牌")
+            self.logger.debug(f"[{self.logger}] 应用效果: 提示令牌")
             return "✅ 购买成功！获得一枚提示令牌！"
         elif item_id == "lucky_charm":
             user["lucky_charm_count"] += 1
-            logger.debug(f"[{self.plugin_name}] 应用效果: 幸运护符")
+            self.logger.debug(f"[{self.logger}] 应用效果: 幸运护符")
             return "✅ 购买成功！获得幸运护符，下次抽奖时生效！"
         return "✅ 购买成功！"
