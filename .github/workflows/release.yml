@@ -7,6 +7,9 @@ on:
       - main
   workflow_dispatch:  # 允许手动触发
 
+permissions:
+  contents: read
+
 jobs:
   build:
     name: Build Release
@@ -24,13 +27,13 @@ jobs:
 
       # 1. 检出代码
       - name: Checkout code
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
           fetch-depth: 0  # 获取完整的 git 历史
 
       # 2. 设置 Python 环境
       - name: Set up Python
-        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        uses: actions/setup-python@7f4fc3e22c37d6ff65e88745f38bd3157c663f7c # v4.9.1
         with:
           python-version: '3.14'
 
@@ -81,9 +84,11 @@ jobs:
           VERSION=${GITHUB_REF#refs/tags/v}
 
           if [ -z "$PREVIOUS_TAG" ]; then
-            NOTES="## 🎉 首次发布这是 AstrBot 百宝袋插件的首次正式发布。"
+            NOTES="## 🎉 首次发布\n\n这是 AstrBot 百宝袋插件的首次正式发布。"
           else
-            NOTES="## 📝 更新日志\n### 本次更新了\n### $(git log ${PREVIOUS_TAG}..HEAD --pretty=format:"- %s" --no-merges | sed 's/^[a-z-]*: //')"
+            # 生成更新日志，移除 commit 类型前缀（如 feat:, fix: 等）
+            COMMITS=$(git log ${PREVIOUS_TAG}..HEAD --pretty=format:"- %s" --no-merges | sed 's/^[a-z]*: //')
+            NOTES="## 📝 更新日志\n\n### 本次更新了\n\n$COMMITS"
           fi
 
           # 保存到文件

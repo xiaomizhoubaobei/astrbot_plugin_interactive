@@ -39,10 +39,10 @@ jobs:
         egress-policy: audit
 
     - name: 检出仓库
-      uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+      uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
 
     - name: 设置 Python 3.14
-      uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405
+      uses: actions/setup-python@7f4fc3e22c37d6ff65e88745f38bd3157c663f7c # v4.9.1
       with:
         python-version: '3.14'
 
@@ -55,6 +55,6 @@ jobs:
       uses: github/codeql-action/autobuild@5d4e8d1aca955e8d8589aabd499c5cae939e33c7
 
     - name: 执行 CodeQL 分析
-      uses: github/codeql-action/analyze@5d4e8d1aca955e8d8589aabd499c5cae939e33c7
+      uses: github/codeql-action/analyze@45580472a5bb82c4681c4ac726cfdb60060c2ee1 # v3.32.4
       with:
         category: "/language:${{matrix.language}}"
