@@ -9,6 +9,9 @@ on:
   schedule: 
   - cron: '00 10 * * *' 
 
+permissions:
+  contents: read
+
 jobs: 
   stale: 
 
@@ -18,7 +21,12 @@ jobs:
       pull-requests: write 
 
     steps: 
-    - uses: actions/stale@v5 
+    - name: Harden the runner (Audit all outbound calls)
+      uses: step-security/harden-runner@5ef0c079ce82195b2a36a210272d6b661572d83e # v2.14.2
+      with:
+        egress-policy: audit
+
+    - uses: actions/stale@f7176fd3007623b69d27091f9b9d4ab7995f0a06 # v5.2.1
       with: 
         repo-token: ${{ secrets.TOKEN }} 
         stale-issue-message: 'Stale issue message' 

@@ -7,6 +7,9 @@
   pull_request:
     branches: [ "master" ]
  
+ permissions:
+   contents: read
+
  jobs: 
    tfsec: 
      name: Run tfsec sarif report 
@@ -17,8 +20,13 @@
        security-events: write 
  
      steps: 
+       - name: Harden the runner (Audit all outbound calls)
+         uses: step-security/harden-runner@5ef0c079ce82195b2a36a210272d6b661572d83e # v2.14.2
+         with:
+           egress-policy: audit
+
        - name: Clone repo 
-         uses: actions/checkout@v4 
+         uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
  
        - name: Run tfsec 
          uses: aquasecurity/tfsec-sarif-action@21ded20e8ca120cd9d3d6ab04ef746477542a608 
@@ -26,7 +34,7 @@
            sarif_file: tfsec.sarif 
  
        - name: Upload SARIF file 
-         uses: github/codeql-action/upload-sarif@v3 
+         uses: github/codeql-action/upload-sarif@45580472a5bb82c4681c4ac726cfdb60060c2ee1 # v3.32.4
          with: 
            # Path to SARIF file relative to the root of the repository 
            sarif_file: tfsec.sarif
