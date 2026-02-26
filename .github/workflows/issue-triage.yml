@@ -45,7 +45,7 @@ jobs:
         with:
           egress-policy: audit
       - name: 检出仓库
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: '运行 iFlow CLI Issue 分类'
         uses: iflow-ai/iflow-cli-action@v2.0.0
