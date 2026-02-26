@@ -44,17 +44,17 @@ jobs:
     - name: 设置 Python 3.14
       uses: actions/setup-python@7f4fc3e22c37d6ff65e88745f38bd3157c663f7c # v4.9.1
       with:
-        python-version: '3.14'
+        python-version: '3.12'
 
     - name: 初始化 CodeQL
-      uses: github/codeql-action/init@5d4e8d1aca955e8d8589aabd499c5cae939e33c7
+      uses: github/codeql-action/init@5d4e8d1aca955e8d8589aabd499c5cae939e33c7 # v4.31.9
       with:
         languages: ${{ matrix.language }}
 
     - name: 自动构建
-      uses: github/codeql-action/autobuild@5d4e8d1aca955e8d8589aabd499c5cae939e33c7
+      uses: github/codeql-action/autobuild@5d4e8d1aca955e8d8589aabd499c5cae939e33c7 # v4.31.9
 
     - name: 执行 CodeQL 分析
-      uses: github/codeql-action/analyze@45580472a5bb82c4681c4ac726cfdb60060c2ee1 # v3.32.4
+      uses: github/codeql-action/analyze@5d4e8d1aca955e8d8589aabd499c5cae939e33c7 # v4.31.9
       with:
         category: "/language:${{matrix.language}}"
