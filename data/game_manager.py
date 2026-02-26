@@ -18,10 +18,12 @@ class GameManager:
             "target_number": random.randint(1, max_number),
             "attempts": 0,
             "start_time": int(datetime.now().timestamp() * 1000),
-            "max_number": max_number
+            "max_number": max_number,
         }
         self.games[game_key] = game
-        self.logger.info("创建新游戏", game_key=game_key, target_number=game['target_number'])
+        self.logger.info(
+            "创建新游戏", game_key=game_key, target_number=game["target_number"]
+        )
         return game
 
     def get_game(self, game_key: str) -> Optional[Dict]:
@@ -43,19 +45,21 @@ class GameManager:
             self.logger.debug(
                 "游戏尝试次数更新",
                 game_key=game_key,
-                attempts=self.games[game_key]['attempts']
+                attempts=self.games[game_key]["attempts"],
             )
 
     def calculate_game_score(self, game: Dict) -> tuple[int, int]:
         """计算游戏得分"""
-        time_used = int((int(datetime.now().timestamp() * 1000) - game["start_time"]) / 1000)
+        time_used = int(
+            (int(datetime.now().timestamp() * 1000) - game["start_time"]) / 1000
+        )
         base_points = max(1, 10 - game["attempts"]) * 5
         time_bonus = max(1, 60 - time_used) * 2
         self.logger.debug(
             "计算得分",
             base_points=base_points,
             time_bonus=time_bonus,
-            time_used_seconds=time_used
+            time_used_seconds=time_used,
         )
         return base_points, time_bonus
 

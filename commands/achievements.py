@@ -3,8 +3,6 @@ from astrbot.api.event import AstrMessageEvent, MessageEventResult
 from ..utils.logger_manager import PluginLogger, UserActionLogger
 
 
-
-
 from ..config import ACHIEVEMENTS
 
 
@@ -17,7 +15,9 @@ class AchievementManager:
         self.action_logger = UserActionLogger(logger)
         self.user_manager = user_manager
 
-    async def check(self, user_id: str, platform: str, user_data: dict, event: AstrMessageEvent) -> None:
+    async def check(
+        self, user_id: str, platform: str, user_data: dict, event: AstrMessageEvent
+    ) -> None:
         """检查并解锁成就"""
         unlocked = []
 
@@ -26,8 +26,12 @@ class AchievementManager:
                 if self._check_condition(achievement, user_data):
                     user_data["achievements"].append(achievement["id"])
                     user_data["points"] += achievement["reward"]
-                    unlocked.append(f"🎖️ {achievement['name']} - {achievement['description']} (+{achievement['reward']}积分)")
-                    self.logger.info(f"[{self.logger}] 用户 {user_id}@{platform} 解锁成就: {achievement['name']}")
+                    unlocked.append(
+                        f"🎖️ {achievement['name']} - {achievement['description']} (+{achievement['reward']}积分)"
+                    )
+                    self.logger.info(
+                        f"[{self.logger}] 用户 {user_id}@{platform} 解锁成就: {achievement['name']}"
+                    )
 
         if unlocked:
             await self.user_manager.update_user_data(user_id, platform, user_data)
@@ -63,6 +67,7 @@ class AchievementManager:
             if len(history) < 7:
                 return False
             from datetime import datetime, timedelta
+
             today = datetime.now().date()
             dates = set()
             for entry in history[:20]:  # 检查最近20条记录
@@ -113,7 +118,9 @@ class AchievementsCommand:
             for ach_id in user["achievements"]:
                 achievement = next((a for a in ACHIEVEMENTS if a["id"] == ach_id), None)
                 if achievement:
-                    result += f"✅ {achievement['name']}: {achievement['description']}\n"
+                    result += (
+                        f"✅ {achievement['name']}: {achievement['description']}\n"
+                    )
             result += "\n"
 
         result += "🔒 未解锁成就 🔒\n"

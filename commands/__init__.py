@@ -20,5 +20,5 @@ __all__ = [
     "AchievementsCommand",
     "ProfileCommand",
     "HelpCommand",
-    "CowCommand"
+    "CowCommand",
 ]

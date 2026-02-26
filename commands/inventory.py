@@ -3,9 +3,6 @@ from astrbot.api.event import AstrMessageEvent, MessageEventResult
 from ..utils.logger_manager import PluginLogger, UserActionLogger
 
 
-
-
-
 class InventoryCommand:
     """查看物品栏命令"""
 
@@ -27,7 +24,9 @@ class InventoryCommand:
         user = await self.user_manager.get_user_data(user_id, platform)
 
         if not user["inventory"]:
-            event.set_result(MessageEventResult().message("你的物品栏空空如也，快去商店购买物品吧！"))
+            event.set_result(
+                MessageEventResult().message("你的物品栏空空如也，快去商店购买物品吧！")
+            )
             return
 
         result = "🎒 你的物品栏 🎒\n"

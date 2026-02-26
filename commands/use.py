@@ -3,9 +3,6 @@ from astrbot.api.event import AstrMessageEvent, MessageEventResult
 from ..utils.logger_manager import PluginLogger, UserActionLogger
 
 
-
-
-
 class UseCommand:
     """使用物品命令"""
 
@@ -26,7 +23,11 @@ class UseCommand:
         platform = event.get_platform_id()
 
         if not item_id:
-            event.set_result(MessageEventResult().message("❌ 请输入要使用的物品ID，使用 'shop list' 查看可购买物品"))
+            event.set_result(
+                MessageEventResult().message(
+                    "❌ 请输入要使用的物品ID，使用 'shop list' 查看可购买物品"
+                )
+            )
             return
 
         if not await self.user_manager.check_command_limits(user_id, platform, event):
@@ -36,7 +37,11 @@ class UseCommand:
         item = await self.user_manager.get_inventory_item(user_id, platform, item_id)
 
         if not item:
-            event.set_result(MessageEventResult().message("❌ 你没有该物品或物品不存在，请检查物品ID是否正确"))
+            event.set_result(
+                MessageEventResult().message(
+                    "❌ 你没有该物品或物品不存在，请检查物品ID是否正确"
+                )
+            )
             return
 
         result = self._apply_item_effect(user, item)

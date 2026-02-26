@@ -11,7 +11,9 @@ import random
 class SpinCommand:
     """幸运转盘命令"""
 
-    def __init__(self, star_instance, user_manager, achievement_manager, logger: PluginLogger):
+    def __init__(
+        self, star_instance, user_manager, achievement_manager, logger: PluginLogger
+    ):
         self.star = star_instance
         self.user_manager = user_manager
         self.achievement_manager = achievement_manager
@@ -21,13 +23,48 @@ class SpinCommand:
 
         # 幸运转盘配置
         self.prizes = [
-            {"name": "特等奖", "probability": 0.01, "points": 500, "description": "500积分大奖"},
-            {"name": "一等奖", "probability": 0.05, "points": 200, "description": "200积分"},
-            {"name": "二等奖", "probability": 0.10, "points": 100, "description": "100积分"},
-            {"name": "三等奖", "probability": 0.15, "points": 50, "description": "50积分"},
-            {"name": "四等奖", "probability": 0.20, "points": 20, "description": "20积分"},
-            {"name": "五等奖", "probability": 0.25, "points": 10, "description": "10积分"},
-            {"name": "谢谢参与", "probability": 0.24, "points": 0, "description": "下次好运"},
+            {
+                "name": "特等奖",
+                "probability": 0.01,
+                "points": 500,
+                "description": "500积分大奖",
+            },
+            {
+                "name": "一等奖",
+                "probability": 0.05,
+                "points": 200,
+                "description": "200积分",
+            },
+            {
+                "name": "二等奖",
+                "probability": 0.10,
+                "points": 100,
+                "description": "100积分",
+            },
+            {
+                "name": "三等奖",
+                "probability": 0.15,
+                "points": 50,
+                "description": "50积分",
+            },
+            {
+                "name": "四等奖",
+                "probability": 0.20,
+                "points": 20,
+                "description": "20积分",
+            },
+            {
+                "name": "五等奖",
+                "probability": 0.25,
+                "points": 10,
+                "description": "10积分",
+            },
+            {
+                "name": "谢谢参与",
+                "probability": 0.24,
+                "points": 0,
+                "description": "下次好运",
+            },
         ]
 
         # 转盘消耗
@@ -43,7 +80,9 @@ class SpinCommand:
         platform = event.get_platform_id()
         msg = message.strip().lower()
 
-        self.logger.debug(f"[{self.plugin_name}] 用户 {user_id}@{platform} 尝试幸运转盘: {msg}")
+        self.logger.debug(
+            f"[{self.plugin_name}] 用户 {user_id}@{platform} 尝试幸运转盘: {msg}"
+        )
 
         # 处理子命令
         if msg == "info":
@@ -65,7 +104,7 @@ class SpinCommand:
         else:
             # 默认使用免费次数
             user = await self.user_manager.get_user_data(user_id, platform)
-            
+
             # 检查是否有免费次数
             free_spins = user.get("free_spin_count", 0)
             if free_spins > 0 and msg != "pay":
@@ -78,7 +117,9 @@ class SpinCommand:
         # 检查用户积分
         user = await self.user_manager.get_user_data(user_id, platform)
         if user["points"] < cost:
-            self.logger.debug(f"[{self.plugin_name}] 用户 {user_id}@{platform} 积分不足")
+            self.logger.debug(
+                f"[{self.plugin_name}] 用户 {user_id}@{platform} 积分不足"
+            )
             event.set_result(
                 MessageEventResult().message(
                     f"💰 积分不足！幸运转盘需要 {cost} 积分，你当前只有 {user['points']} 积分"
@@ -144,6 +185,8 @@ class SpinCommand:
         for prize in reversed(self.prizes):
             emoji = "🌟" if prize["points"] > 0 else "💔"
             prob_percent = int(prize["probability"] * 100)
-            info += f"{emoji} {prize['name']}: {prize['description']} ({prob_percent}%)\n"
+            info += (
+                f"{emoji} {prize['name']}: {prize['description']} ({prob_percent}%)\n"
+            )
         info += f"\n💰 消耗：{self.spin_cost} 积分/次"
         return info

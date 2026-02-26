@@ -4,13 +4,12 @@ from astrbot.api.event import AstrMessageEvent, MessageEventResult
 from ..utils.logger_manager import PluginLogger, UserActionLogger
 
 
-
-
-
 class SignCommand:
     """签到命令"""
 
-    def __init__(self, star_instance, user_manager, achievement_manager, logger: PluginLogger):
+    def __init__(
+        self, star_instance, user_manager, achievement_manager, logger: PluginLogger
+    ):
         self.logger = logger
         self.plugin_name = "astrbot_plugin_interactive"
         self.action_logger = UserActionLogger(logger)
@@ -34,7 +33,9 @@ class SignCommand:
         today = self._get_today()
 
         if user["last_sign"] == today:
-            event.set_result(MessageEventResult().message("你今天已经签到过了哦，明天再来吧！"))
+            event.set_result(
+                MessageEventResult().message("你今天已经签到过了哦，明天再来吧！")
+            )
             return
 
         # 计算连续签到

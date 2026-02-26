@@ -32,8 +32,7 @@ class Main(star.Star):
 
         # 初始化日志系统
         self.logger = PluginLogger(
-            self.name,
-            enable_debug=self.config.get("debug_mode", False)
+            self.name, enable_debug=self.config.get("debug_mode", False)
         )
         self.action_logger = UserActionLogger(self.logger)
 
@@ -43,17 +42,31 @@ class Main(star.Star):
         self.achievement_manager = AchievementManager(self.user_manager, self.logger)
 
         # 初始化命令处理器
-        self.guess_command = GuessCommand(self, self.user_manager, self.game_manager, self.achievement_manager, self.logger)
-        self.sign_command = SignCommand(self, self.user_manager, self.achievement_manager, self.logger)
-        self.lottery_command = LotteryCommand(self, self.user_manager, self.achievement_manager, self.logger)
-        self.shop_command = ShopCommand(self, self.user_manager, self.achievement_manager, self.logger)
+        self.guess_command = GuessCommand(
+            self,
+            self.user_manager,
+            self.game_manager,
+            self.achievement_manager,
+            self.logger,
+        )
+        self.sign_command = SignCommand(
+            self, self.user_manager, self.achievement_manager, self.logger
+        )
+        self.lottery_command = LotteryCommand(
+            self, self.user_manager, self.achievement_manager, self.logger
+        )
+        self.shop_command = ShopCommand(
+            self, self.user_manager, self.achievement_manager, self.logger
+        )
         self.use_command = UseCommand(self, self.user_manager, self.logger)
         self.inventory_command = InventoryCommand(self.user_manager, self.logger)
         self.achievements_command = AchievementsCommand(self.user_manager, self.logger)
         self.profile_command = ProfileCommand(self.user_manager, self.logger)
         self.help_command = HelpCommand()
         self.cow_command = CowCommand(self, self.user_manager, self.logger)
-        self.spin_command = SpinCommand(self, self.user_manager, self.achievement_manager, self.logger)
+        self.spin_command = SpinCommand(
+            self, self.user_manager, self.achievement_manager, self.logger
+        )
 
         self.logger.info("插件组件初始化完成")
 
@@ -133,7 +146,9 @@ class Main(star.Star):
 
     async def terminate(self) -> None:
         """插件卸载"""
-        self.logger.info("互动游戏插件已卸载，当前活跃游戏数: {len(self.game_manager.games)}")
+        self.logger.info(
+            "互动游戏插件已卸载，当前活跃游戏数: {len(self.game_manager.games)}"
+        )
 
     # ========== 命令注册 ==========
     @filter.command("guess")
@@ -158,10 +173,14 @@ class Main(star.Star):
         await self.lottery_command.handle(event)
 
     @filter.command("shop")
-    async def shop(self, event: AstrMessageEvent, action: str = "", item_id: str = "") -> None:
+    async def shop(
+        self, event: AstrMessageEvent, action: str = "", item_id: str = ""
+    ) -> None:
         """积分商店"""
         user_id = event.get_sender_id()
-        self.logger.debug("用户 {user_id} 执行 shop 命令: action={action}, item_id={item_id}")
+        self.logger.debug(
+            "用户 {user_id} 执行 shop 命令: action={action}, item_id={item_id}"
+        )
         await self.shop_command.handle(event, action, item_id)
 
     @filter.command("use")
@@ -199,10 +218,14 @@ class Main(star.Star):
         await self.help_command.handle(event)
 
     @filter.command("cow")
-    async def cow(self, event: AstrMessageEvent, action: str = "", nickname: str = "") -> None:
+    async def cow(
+        self, event: AstrMessageEvent, action: str = "", nickname: str = ""
+    ) -> None:
         """牛牛系统"""
         user_id = event.get_sender_id()
-        self.logger.debug("用户 {user_id} 执行 cow 命令: action={action}, nickname={nickname}")
+        self.logger.debug(
+            "用户 {user_id} 执行 cow 命令: action={action}, nickname={nickname}"
+        )
         await self.cow_command.handle(event, action, nickname)
 
     @filter.command("spin")

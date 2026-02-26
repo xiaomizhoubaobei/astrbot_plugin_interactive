@@ -3,9 +3,6 @@ from astrbot.api.event import AstrMessageEvent, MessageEventResult
 from ..utils.logger_manager import PluginLogger, UserActionLogger
 
 
-
-
-
 class HelpCommand:
     """帮助命令"""
 

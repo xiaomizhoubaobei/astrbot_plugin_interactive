@@ -3,7 +3,6 @@ from astrbot.api.event import AstrMessageEvent, MessageEventResult
 from ..utils.logger_manager import PluginLogger, UserActionLogger
 
 
-
 from ..config import ACHIEVEMENTS
 
 
@@ -30,9 +29,9 @@ class ProfileCommand:
         # 构建物品列表字符串
         items_list = "无"
         if user["inventory"]:
-            items_list = "\n   ".join([
-                f"{item['name']} x{item['count']}" for item in user["inventory"]
-            ])
+            items_list = "\n   ".join(
+                [f"{item['name']} x{item['count']}" for item in user["inventory"]]
+            )
 
         result = (
             f"📊 {user_id} 的个人资料 📊\n"
