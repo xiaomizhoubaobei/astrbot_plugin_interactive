@@ -79,6 +79,8 @@ jobs:
           cp -r data astrbot_plugin_interactive/ || true
           # 复制工具目录
           cp -r utils astrbot_plugin_interactive/ || true
+          # 复制配置目录
+          cp -r config astrbot_plugin_interactive/ || true
           # 复制 logo 文件（如果存在）
           cp logo.png astrbot_plugin_interactive/ || true
 
